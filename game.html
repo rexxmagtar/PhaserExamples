@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Phaser Sandbox - Demos</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  
+  <!-- Loading Screen (shown while game loads) -->
+  <div class="loading-screen">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Loading Phaser Sandbox...</p>
+  </div>
+
+  <!-- Game Wrapper -->
+  <div class="game-wrapper">
+    
+    <!-- Header -->
+    <header class="game-header">
+      <h1 class="game-header__title">🎮 Phaser Sandbox</h1>
+      <nav class="game-header__nav">
+        <a href="index.html" class="btn btn--secondary">← Back to Home</a>
+      </nav>
+    </header>
+    
+    <!-- Game Container - Phaser injects canvas here -->
+    <div class="game-container">
+      <div id="game-canvas"></div>
+    </div>
+    
+  </div>
+
+  <!-- Phaser Library -->
+  <script src="phaser.js"></script>
+  
+  <!-- Game Configuration -->
+  <script src="js/config.js"></script>
+  
+  <!-- Scene Files (order matters - base scenes first) -->
+  <script src="js/scenes/BootScene.js"></script>
+  <script src="js/scenes/PreloadScene.js"></script>
+  <script src="js/scenes/MenuScene.js"></script>
+  <script src="js/scenes/GameScene.js"></script>
+  
+  <!-- Demo Scenes -->
+  <script src="js/scenes/BubblePopScene.js"></script>
+  <script src="js/scenes/ParticleShowcaseScene.js"></script>
+  <script src="js/scenes/Cube3DScene.js"></script>
+  <script src="js/scenes/UIComponentsScene.js"></script>
+  <script src="js/scenes/ScrollListScene.js"></script>
+  <script src="js/scenes/ShaderEffectsScene.js"></script>
+  <script src="js/scenes/FireDemoScene.js"></script>
+  
+  <!-- Main Entry Point -->
+  <script src="js/main.js"></script>
+
+</body>
+</html>
