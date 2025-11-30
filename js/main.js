@@ -33,7 +33,8 @@ function initGame() {
       UIComponentsScene,
       ScrollListScene,
       ShaderEffectsScene,
-      FireDemoScene
+      FireDemoScene,
+      ImageGalleryScene
     ],
     
     // Scale settings - FIT with zoom for crisp rendering

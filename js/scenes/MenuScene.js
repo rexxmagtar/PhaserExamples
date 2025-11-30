@@ -82,17 +82,24 @@ class MenuScene extends Phaser.Scene {
         title: 'Fire Effect', 
         desc: 'Particles + shader combo',
         color: 0xff6600
+      },
+      { 
+        key: 'ImageGalleryScene', 
+        icon: '🖼️', 
+        title: 'Image Gallery', 
+        desc: 'Virtual scroll, lazy load',
+        color: 0x00aaff
       }
     ];
     
-    // Create grid of demo cards
-    const cols = 3;
-    const cardWidth = 280;
-    const cardHeight = 150;
-    const gapX = 40;
-    const gapY = 35;
+    // Create grid of demo cards (4 columns for 8 demos)
+    const cols = 4;
+    const cardWidth = 240;
+    const cardHeight = 130;
+    const gapX = 25;
+    const gapY = 25;
     const startX = centerX - ((cols - 1) * (cardWidth + gapX)) / 2;
-    const startY = 180;
+    const startY = 160;
     
     demos.forEach((demo, index) => {
       const col = index % cols;
@@ -185,23 +192,23 @@ class MenuScene extends Phaser.Scene {
     glow.alpha = 0;
     
     // Icon
-    const icon = this.add.text(0, -30, demo.icon, {
-      fontSize: '48px'
+    const icon = this.add.text(0, -28, demo.icon, {
+      fontSize: '40px'
     }).setOrigin(0.5);
     
     // Title
-    const title = this.add.text(0, 20, demo.title, {
+    const title = this.add.text(0, 18, demo.title, {
       fontFamily: 'Outfit, sans-serif',
-      fontSize: '24px',
+      fontSize: '20px',
       fontStyle: 'bold',
       color: '#e8e6f0',
       resolution: 2  // 2x resolution for crisp text
     }).setOrigin(0.5);
     
     // Description
-    const desc = this.add.text(0, 48, demo.desc, {
+    const desc = this.add.text(0, 42, demo.desc, {
       fontFamily: 'Outfit, sans-serif',
-      fontSize: '16px',
+      fontSize: '14px',
       color: '#8a879c',
       resolution: 2
     }).setOrigin(0.5);
