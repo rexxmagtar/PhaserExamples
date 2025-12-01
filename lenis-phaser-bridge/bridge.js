@@ -15,30 +15,22 @@
 // ============================================
 // For iOS-like direct finger tracking during slow touch:
 // - syncTouch: true → Enables direct touch synchronization
-// - syncTouchLerp: 0.05 → Very low lerp = minimal smoothing (closer to 0 = more direct)
+// - syncTouchLerp: 0.001 → Very low lerp = minimal smoothing (closer to 0 = more direct)
 // - smoothTouch: true → Keep smooth for inertia after release, but syncTouch overrides during touch
 // - touchInertiaExponent: 1.5 → Controls momentum after finger release (lower = less momentum)
 
 const lenis = new Lenis({
-  duration: 1.2,
-  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
   orientation: 'vertical',
-  
   // Mouse wheel settings
   smoothWheel: true,
   wheelMultiplier: 1,
   
-  // Touch settings for iOS-like behavior
-  smoothTouch: false,           // Enable smooth touch (affects inertia after release)
+  // Touch settings for 1:1 finger speed matching (using Lenis built-in only)
+  smoothTouch: true,           // Enable smooth touch
   touchMultiplier: 1,
-  syncTouch: true,             // ✅ KEY: Sync touch directly with finger movement
-  syncTouchLerp: 0.01,         // ✅ KEY: Very low = minimal smoothing during touch (0.01-0.1 range)
-  touchInertiaExponent: 1.5,    // Controls momentum after release (1.0 = no momentum, 2.0 = more momentum)
-  
-  // Alternative: For even more direct tracking, try:
-  // syncTouchLerp: 0.01,  // Almost 1:1 finger tracking
-  // Or for completely instant touch (no smoothing at all):
-  // smoothTouch: false,   // Disables all touch smoothing (may feel too instant)
+  syncTouch: true,            // ✅ Enable direct touch synchronization
+  syncTouchLerp: 0.0001,       // ✅ Very low lerp for minimal smoothing (closer to 1:1)
+  touchInertiaExponent: 1.5,   // Momentum after release
 });
 
 // ============================================
@@ -103,4 +95,3 @@ window.addEventListener('resize', () => {
     game.scale.resize(window.innerWidth, window.innerHeight);
   }
 });
-
