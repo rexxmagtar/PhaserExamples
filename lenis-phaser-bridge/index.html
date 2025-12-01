@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lenis + Phaser Bridge Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: Arial, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    /* Scrollable content for Lenis (standard body scroll) */
+    #scroll-content {
+      position: absolute;
+      width: 100%;
+      height: 4000px; /* Make page scrollable - matches Phaser content */
+    }
+
+    /* Fixed Phaser canvas container (overlay on top) */
+    #phaser-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: auto; /* Enable for mini-game button clicks - Lenis still handles scroll */
+    }
+
+    /* Info text */
+    .info {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="info">
+    Scroll with mouse wheel or touch<br>
+    Lenis smooth scroll → Phaser movement
+  </div>
+
+  <!-- Hidden scrollable content for Lenis (standard approach) -->
+  <div id="scroll-content"></div>
+  
+  <!-- Fixed Phaser canvas container (overlay) -->
+  <div id="phaser-container"></div>
+
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+  
+  <!-- Phaser -->
+  <script src="../phaser.js"></script>
+  
+  <!-- Phaser Scene (rendering logic) -->
+  <script src="phaser-scene.js"></script>
+  
+  <!-- Bridge Script (connects Lenis to Phaser) -->
+  <script src="bridge.js"></script>
+</body>
+</html>
+
