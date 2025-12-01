@@ -24,7 +24,7 @@ class DistortionPipeline extends Phaser.Renderer.WebGL.Pipelines.PostFXPipeline 
           
           // Distortion effect based on time only (no position dependency)
           float distortion = sin(uTime * 3.0) * uIntensity;
-          distortion += sin(uTime * 2.0) * uIntensity * 0.5;
+          distortion += sin(uTime * 2.0) * uIntensity * 0.5*uv.x * uv.y;
           
           // Apply uniform distortion to UV coordinates
           uv.x += distortion;

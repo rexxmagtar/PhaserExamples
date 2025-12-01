@@ -17,7 +17,7 @@ const lenis = new Lenis({
   smoothWheel: true,    // ← Lenis handles wheel events
   wheelMultiplier: 1,
   smoothTouch: true,    // ← Lenis handles touch events
-  touchMultiplier: 2,
+  touchMultiplier: 1,
 });
 
 // ============================================
