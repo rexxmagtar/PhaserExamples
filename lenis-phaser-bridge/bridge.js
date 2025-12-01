@@ -29,7 +29,7 @@ const lenis = new Lenis({
   wheelMultiplier: 1,
   
   // Touch settings for iOS-like behavior
-  smoothTouch: true,           // Enable smooth touch (affects inertia after release)
+  smoothTouch: false,           // Enable smooth touch (affects inertia after release)
   touchMultiplier: 1,
   syncTouch: true,             // ✅ KEY: Sync touch directly with finger movement
   syncTouchLerp: 0.05,         // ✅ KEY: Very low = minimal smoothing during touch (0.01-0.1 range)
