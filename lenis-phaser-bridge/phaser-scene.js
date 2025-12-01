@@ -268,6 +268,14 @@ class TextDistortionPipeline extends Phaser.Renderer.WebGL.Pipelines.PostFXPipel
 class ScrollScene extends Phaser.Scene {
   constructor() {
     super({ key: 'ScrollScene' });
+    this.scrollY = 0;
+    this.pages = [];
+    this.pageEffects = [];
+    this.pagesContainer = null;
+    this.currentPageIndex = 0;
+    this.fpsText = null;
+    this.memoryText = null;
+    this.lastMemoryUpdate = 0;
   }
 
   create() {
@@ -554,6 +562,73 @@ class ScrollScene extends Phaser.Scene {
     this.scrollY = 0;
     this.currentPageIndex = 0;
     this.updatePagesPosition();
+    
+    // Create FPS and Memory Tracker
+    this.createPerformanceTracker();
+  }
+  
+  createPerformanceTracker() {
+    const { width, height } = this.cameras.main;
+    
+    // Background panel for tracker
+    const panelBg = this.add.rectangle(10, 10, 200, 80, 0x000000, 0.7);
+    panelBg.setOrigin(0, 0);
+    panelBg.setScrollFactor(0); // Fixed to camera
+    panelBg.setDepth(1000); // Always on top
+    
+    // FPS text
+    this.fpsText = this.add.text(20, 20, 'FPS: --', {
+      fontSize: '20px',
+      color: '#00ff00',
+      fontStyle: 'bold',
+      stroke: '#000000',
+      strokeThickness: 2
+    });
+    this.fpsText.setOrigin(0, 0);
+    this.fpsText.setScrollFactor(0); // Fixed to camera
+    this.fpsText.setDepth(1001);
+    
+    // Memory text
+    this.memoryText = this.add.text(20, 50, 'Memory: --', {
+      fontSize: '18px',
+      color: '#00aaff',
+      fontStyle: 'bold',
+      stroke: '#000000',
+      strokeThickness: 2
+    });
+    this.memoryText.setOrigin(0, 0);
+    this.memoryText.setScrollFactor(0); // Fixed to camera
+    this.memoryText.setDepth(1001);
+    
+    // Initialize last memory update time
+    this.lastMemoryUpdate = 0;
+  }
+  
+  update() {
+    // Update FPS every frame
+    if (this.fpsText) {
+      const fps = Math.round(this.game.loop.actualFps);
+      const color = fps >= 55 ? '#00ff00' : fps >= 30 ? '#ffff00' : '#ff0000';
+      this.fpsText.setText(`FPS: ${fps}`);
+      this.fpsText.setColor(color);
+    }
+    
+    // Update memory every second (to avoid performance impact)
+    const now = this.time.now;
+    if (this.memoryText && now - this.lastMemoryUpdate > 1000) {
+      this.lastMemoryUpdate = now;
+      
+      // Try to get memory info (Chrome/Edge only)
+      if (performance.memory) {
+        const usedMB = (performance.memory.usedJSHeapSize / 1048576).toFixed(2);
+        const totalMB = (performance.memory.totalJSHeapSize / 1048576).toFixed(2);
+        const limitMB = (performance.memory.jsHeapSizeLimit / 1048576).toFixed(2);
+        this.memoryText.setText(`Memory: ${usedMB}MB / ${totalMB}MB (${limitMB}MB limit)`);
+      } else {
+        // Fallback for browsers without memory API
+        this.memoryText.setText('Memory: N/A (not supported)');
+      }
+    }
   }
 
   createParticleTextures() {
