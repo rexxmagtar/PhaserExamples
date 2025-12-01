@@ -32,7 +32,7 @@ const lenis = new Lenis({
   smoothTouch: false,           // Enable smooth touch (affects inertia after release)
   touchMultiplier: 1,
   syncTouch: true,             // ✅ KEY: Sync touch directly with finger movement
-  syncTouchLerp: 0.05,         // ✅ KEY: Very low = minimal smoothing during touch (0.01-0.1 range)
+  syncTouchLerp: 0.01,         // ✅ KEY: Very low = minimal smoothing during touch (0.01-0.1 range)
   touchInertiaExponent: 1.5,    // Controls momentum after release (1.0 = no momentum, 2.0 = more momentum)
   
   // Alternative: For even more direct tracking, try:
