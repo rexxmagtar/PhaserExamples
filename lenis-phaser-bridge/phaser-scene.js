@@ -261,6 +261,70 @@ class TextDistortionPipeline extends Phaser.Renderer.WebGL.Pipelines.PostFXPipel
   }
 }
 
+// Vertex Wave Distortion Pipeline (Fragment Shader Simulation)
+// HOW IT WORKS: Instead of moving vertices (which we can't do in fragment shader),
+// we offset the UV coordinates when sampling the texture. This creates the illusion
+// that the geometry is being distorted, even though we're just reading from different
+// parts of the texture based on wave calculations.
+class VertexWavePipeline extends Phaser.Renderer.WebGL.Pipelines.PostFXPipeline {
+  constructor(game) {
+    super({
+      game,
+      name: 'VertexWavePipeline',
+      fragShader: `
+        precision mediump float;
+        uniform sampler2D uMainSampler;
+        uniform float uTime;
+        uniform float uAmplitude;
+        uniform float uPageSeed;  // Unique seed for each page to stabilize pattern
+        varying vec2 outTexCoord;
+        
+        void main() {
+          vec2 uv = outTexCoord;
+          
+          // Use object's local UV coordinates (0 to 1) 
+          // Add page seed to create unique, stable pattern for each page
+          // The seed ensures the pattern doesn't shift with scroll
+          float stableY = uv.y + uPageSeed;
+          float stableX = uv.x + uPageSeed * 0.5;
+          
+          // Create wave pattern based on stable coordinates
+          // Pattern is fixed to the object's UV + page seed, not screen position
+          float waveX = sin(stableX * 20.0 + uTime * 2.0) * uAmplitude;
+          float waveY = cos(stableY * 8.0 + uTime * 1.5) * uAmplitude * 0.6;
+          
+          // Apply distortion
+           uv.x += waveX * 0.03;
+         uv.y += waveY * 0.02;
+          
+          // Clamp to prevent sampling outside texture
+        uv = clamp(uv, 0.0, 1.0);
+          
+          vec4 color = texture2D(uMainSampler, uv);
+          gl_FragColor = color;
+        }
+      `
+    });
+    
+    this._amplitude = 1.4;
+    this._pageSeed = 0.0;
+  }
+  
+  onPreRender() {
+    this.set1f('uTime', this.game.loop.time / 1000);
+    this.set1f('uAmplitude', this._amplitude);
+    this.set1f('uPageSeed', this._pageSeed);
+  }
+  
+  setAmplitude(value) {
+    this._amplitude = value;
+  }
+  
+  setPageSeed(value) {
+    this._pageSeed = value;
+  }
+}
+
 // ============================================
 // PHASER SCENE
 // ============================================
@@ -291,6 +355,7 @@ class ScrollScene extends Phaser.Scene {
     this.renderer.pipelines.addPostPipeline('Pixelate', PixelatePipeline);
     this.renderer.pipelines.addPostPipeline('Glow', GlowPipeline);
     this.renderer.pipelines.addPostPipeline('TextDistortion', TextDistortionPipeline);
+    this.renderer.pipelines.addPostPipeline('VertexWave', VertexWavePipeline);
     
     // Create container for all pages
     this.pagesContainer = this.add.container(width / 2, 0);
@@ -377,22 +442,29 @@ class ScrollScene extends Phaser.Scene {
       
       // Apply shader effects - we'll apply to page background and all shapes
       let shaderName = null;
-      if (['distortion', 'wave', 'chromatic', 'pixelate'].includes(effectType)) {
+      if (['distortion', 'wave', 'chromatic', 'pixelate', 'vertexwave'].includes(effectType)) {
         // Map effect type to shader pipeline name
         const shaderMap = {
           'distortion': 'Distortion',
           'wave': 'WaveDistortion',
           'chromatic': 'ChromaticAberration',
-          'pixelate': 'Pixelate'
+          'pixelate': 'Pixelate',
+          'vertexwave': 'VertexWave'
         };
         
         shaderName = shaderMap[effectType];
         if (shaderName) {
           // Apply shader to page background
           pageBg.setPostPipeline(shaderName);
-          this.pageEffects[i].shaderPipeline = pageBg.getPostPipeline(shaderName);
+          const pipeline = pageBg.getPostPipeline(shaderName);
+          this.pageEffects[i].shaderPipeline = pipeline;
           this.pageEffects[i].shaderName = shaderName;
           this.pageEffects[i].pageBg = pageBg;
+          
+          // For VertexWave shader, set a unique seed for each page to stabilize the wave pattern
+          if (shaderName === 'VertexWave' && pipeline && pipeline.setPageSeed) {
+            pipeline.setPageSeed(i * 100.0);  // Unique seed based on page index
+          }
         }
       }
       
@@ -1094,9 +1166,10 @@ class ScrollScene extends Phaser.Scene {
       'smoke',              // Page 7 (index 6): Smoke particles
       'pixelate',           // Page 8 (index 7): Pixelate shader
       'textshuffle',        // Page 9 (index 8): Text shuffling effect (lightweight, no shader)
-      'magic',              // Page 10 (index 9): Magic sparkles particles - RED PAGE WITH PARTICLES
-      'parallax',           // Page 11 (index 10): Parallax effect - objects move at different speeds
-      'minigame'            // Page 12 (index 11): Mini-game with button and confetti
+      'vertexwave',         // Page 10 (index 9): Vertex wave distortion shader
+      'magic',              // Page 11 (index 10): Magic sparkles particles - RED PAGE WITH PARTICLES
+      'parallax',           // Page 12 (index 11): Parallax effect - objects move at different speeds
+      'minigame'            // Page 13 (index 12): Mini-game with button and confetti
     ];
     return effects[pageIndex] || 'normal';
   }
